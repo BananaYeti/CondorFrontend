@@ -17,7 +17,7 @@ input {                         /*BUG! input field text does not have glow effec
   background-color: transparent;/*#031e11;*/
   text-shadow: 0 0 0 #14fdce;
   outline: none;
-  color: #14fdce; /*Note, text shadow is being used for text*/
+  color: transparent; /*#14fdce; /*Note, text shadow is being used for text*/
   font-family: 'VT323';
   font-size: 24px;
   -webkit-font-smoothing: none;

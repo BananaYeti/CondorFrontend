@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './BasicTerminal.css';
+import socketApi from '../api';
 
 class BasicTerminal extends Component {
     constructor(){
@@ -9,16 +10,22 @@ class BasicTerminal extends Component {
             lines:[],
             newline:''
         };
+        socketApi.subscribeToMessage(
+            (message) => {
+                this.setState({
+                    lines:[...this.state.lines, 'Message: ' + message]
+                });
+            });
     }
     updateNewLine = (e) => {
         console.log(e.target.value);
         this.setState({newline:e.target.value});
     }
-    addLine = (e) => {
+    submitCommand = (e) => {
         e.preventDefault();
         console.log(this.state.newline);
+        socketApi.sendMessage(this.state.newline);
         this.setState({
-            lines:[...this.state.lines, 'foo@bar:~$ ' + this.state.newline],
             newline:''
         });
     }
@@ -35,7 +42,7 @@ class BasicTerminal extends Component {
                             <p key={index}>{line}</p>
                         )
                     }
-                    <form onSubmit={this.addLine}>
+                    <form onSubmit={this.submitCommand}>
                     foo@bar:~$ <input autoComplete="off" 
                                 autoCorrect="off" 
                                 autoCapitalize="off" 
