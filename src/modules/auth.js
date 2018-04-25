@@ -7,10 +7,10 @@ function sendLogin(username, password){
         username,
         password
     };
-
+    console.log('logging in' + username)
     axios({
         method:'post',
-        url:'http://localhost:8000/login',
+        url:'http://18.220.152.168:80/login',
         data:postData
     }).then((response) => {
         console.log('login succeeded');

@@ -4,8 +4,6 @@ import {sendMessage} from '../../actions/messageActions';
 
 import chat from '../../modules/chat';
 
-import './ChatWindow.css';
-
 class ChatWindow extends Component{
     constructor(){
         super();
@@ -31,27 +29,31 @@ class ChatWindow extends Component{
 
     render(){
     return (
-    <div className="chat">
-        <p>Chatroom: {this.props.chat}</p>
+    <label for="chat_line">
+        <div class="game chat">
         {
             this.props.messages.map((line, index) => (
                 <p key={index}>{line.username}:{line.text}</p>
             ))
         }
-        <form onSubmit={this.submitMessage}>
-            $ <input autoComplete="off" 
+        </div>
+        <div class="messagebox">
+            <form onSubmit={this.submitMessage}>
+                Say: <input 
+                    autoComplete="off" 
                     autoCorrect="off" 
                     autoCapitalize="off" 
                     spellCheck="false" 
-                    wrap="true"
-                    cols="1"
+                    wrap="true" cols="1" 
                     id="chat_line" 
                     type="text" 
-                    className="inputArea"
-                    value={this.state.nextMessage}
+                    className="inputArea" 
+                    value={this.state.nextMessage} 
                     onChange={this.updateNextMessage}/>
-        </form>
-    </div>);
+            </form>
+        </div>
+    </label>
+  );
     }
 }
 
