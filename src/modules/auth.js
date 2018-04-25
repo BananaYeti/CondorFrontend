@@ -1,22 +1,27 @@
-class Auth{
-    static authenticateUser(token){
-        if(!token){
-            localStorage.setItem('token', null);            
-        }
-        localStorage.setItem('token', token);
-    }
+import {store, persistor} from '../store';
+import {login, logout} from '../actions/authActions';
+import axios from 'axios';
 
-    static isUserAuthenticated() {
-        return localStorage.getItem('token') !== null;
-    }
+function sendLogin(username, password){
+    var postData = {
+        username,
+        password
+    };
 
-    static deauthenticateUser() {
-        localStorage.removeItem('token');
-    }
-
-    static getToken() {
-        return localStorage.getItem('token');
-    }
+    axios({
+        method:'post',
+        url:'http://localhost:8000/login',
+        data:postData
+    }).then((response) => {
+        console.log('login succeeded');
+        console.log(response);
+        store.dispatch(login(response.data.user.name, response.data.token));
+    }).catch((error) => {
+        console.log('login failed');
+        store.dispatch(logout());
+    });
 }
 
-export default Auth;
+export default {
+    sendLogin
+};

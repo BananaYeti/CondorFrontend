@@ -1,26 +1,19 @@
+import {connect} from 'react-redux';
+
 import React, { Component } from 'react';
 import './Terminal.css';
 import auth from '../modules/auth';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/login/LoginForm';
+import GameLayout from './GameLayout';
 
-class BasicTerminal extends Component {
-    constructor(){
-        super();
-        var child = null;
-        if(auth.getToken()){
-            console.log('entering login mode...');
-            child = (<LoginForm/>);
-        }
-        this.state = {
-            child:child
-        }
-    }
-
+class Terminal extends Component {
     render(){
         return (
             <div className="frame">
             <div className="piece output">
-                {this.state.child}
+                {
+                    this.props.authorized?(<GameLayout/>):<LoginForm/>
+                }
                 <div className="piece scanlines noclick"/>
                 <div className="piece glow noclick"/>            
             </div>
@@ -29,4 +22,8 @@ class BasicTerminal extends Component {
     }
 }
 
-export default BasicTerminal;
+const mapStateToProps = state => ({
+    authorized:state.authorization.loggedIn
+});
+
+export default connect(mapStateToProps)(Terminal);

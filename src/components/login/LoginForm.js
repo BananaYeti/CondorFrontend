@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './LoginForm.css';
 import axios from 'axios';
-import auth from '../modules/auth';
+import auth from '../../modules/auth';
 
 class LoginForm extends Component{
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             username:'',
             password:'',
@@ -16,25 +16,10 @@ class LoginForm extends Component{
     sendForm = (event) => {
         event.preventDefault();
         console.log('sending');
-        var postData = {
-            username:this.state.username,
-            password:this.state.password
-        };
-
+        auth.sendLogin(this.state.username, this.state.password);
         this.setState({
             username:'',
             password:''
-        })
-
-        axios({
-            method:'post',
-            url:'http://localhost:8000/login',
-            data:postData
-        }).then((response) => {
-            auth.authenticateUser(response.data.token);
-        }).catch((error) => {
-            auth.authenticateUser(null);
-            this.setState({error: error});
         });
     }
 

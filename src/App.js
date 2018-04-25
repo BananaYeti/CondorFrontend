@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import BasicTerminal from './basicterminal/BasicTerminal.js';
 import Terminal from './containers/Terminal';
 import './App.css';
 
