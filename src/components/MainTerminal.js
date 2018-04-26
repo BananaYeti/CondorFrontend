@@ -47,10 +47,22 @@ class MainTerminal extends Component {
         });
     }
 
+    scrollToBottom = () => {
+      this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    }
+
+    componentDidMount() {
+      this.scrollToBottom();
+    }
+
+    componentDidUpdate() {
+      this.scrollToBottom();
+    }
+
     render() {
     return (
         <label htmlFor="command_line">
-            <div className="term">
+            <div className="game term">
                 <h1>CONDOR 2049</h1>
                 <p>Welcome, contestant {this.props.username}</p>
                 {
@@ -70,6 +82,9 @@ class MainTerminal extends Component {
                             value={this.state.newtermline}
                             onChange={this.updatenewtermline}/>
                 </form>
+                <div style={{ float:"left", clear: "both" }}
+                     ref={(el) => { this.messagesEnd = el; }}>
+                </div>
             </div>
         </label>
     );
