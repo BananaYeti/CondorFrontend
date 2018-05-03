@@ -48,17 +48,21 @@ a:hover {
   top: 2%;
   bottom: 2%;
   left: 2%;
-  right: 25.5%;
+  right: 15.5%;
 }
 
 .chat {
   position: absolute;
-  top: 70%;
+  top: 65%;
   bottom: 2em;
   right: 2%;
-  left: 75%;
+  left: 65%;
   border: 2px solid #14fdce;
   padding: 10px;
+}
+
+.chat p {
+  margin: 0 0 0.5em 0;
 }
 
 .messagebox {
@@ -66,7 +70,7 @@ a:hover {
   height: 1.5em;
   bottom: 0.5em;
   right: 2%;
-  left: 75%;
+  left: 65%;
   border: 2px solid #14fdce;
   padding-left: 10px;
 }
@@ -74,11 +78,15 @@ a:hover {
 .bot {
   position: absolute;
   top: 2%;
-  bottom: 29.9%;
+  bottom: 34.9%;
   right: 2%;
-  left: 75%;
+  left: 65%;
   border: 2px solid #14fdce;
   padding: 10px;
+}
+
+.bot pre {
+  margin: 0 0 0 0;
 }
 
 /* Nothing beyond this point */
@@ -228,7 +236,7 @@ a::selection {
 }
 
 ::-webkit-scrollbar { /*sperges*/
-    display: none; 
+    display: none;
 }
 
 ::-moz-selection [class^="icon-"],

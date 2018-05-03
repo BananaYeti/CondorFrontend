@@ -27,33 +27,48 @@ class ChatWindow extends Component{
         })
     }
 
+    scrollToBottom = () => {
+      this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    }
+
+    componentDidMount() {
+      this.scrollToBottom();
+    }
+
+    componentDidUpdate() {
+      this.scrollToBottom();
+    }
+
     render(){
     return (
-    <label for="chat_line">
-        <div class="game chat">
-        {
-            this.props.messages.map((line, index) => (
-                <p key={index}>{line.username}:{line.text}</p>
-            ))
-        }
-        </div>
-        <div class="messagebox">
-            <form onSubmit={this.submitMessage}>
-                Say: <input 
-                    autoComplete="off" 
-                    autoCorrect="off" 
-                    autoCapitalize="off" 
-                    spellCheck="false" 
-                    wrap="true" cols="1" 
-                    id="chat_line" 
-                    type="text" 
-                    className="inputArea" 
-                    value={this.state.nextMessage} 
-                    onChange={this.updateNextMessage}/>
-            </form>
-        </div>
-    </label>
-  );
+      <label htmlFor="chat_line">
+          <div className="game chat">
+          {
+              this.props.messages.map((line, index) => (
+                  <p key={index}>{line.username}: {line.text}</p>
+              ))
+          }
+          <div style={{ float:"left", clear: "both" }}
+               ref={(el) => { this.messagesEnd = el; }}>
+          </div>
+          </div>
+          <div className="messagebox">
+              <form onSubmit={this.submitMessage}>
+                  Say: <input
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck="false"
+                      wrap="true" cols="1"
+                      id="chat_line"
+                      type="text"
+                      className="inputArea"
+                      value={this.state.nextMessage}
+                      onChange={this.updateNextMessage}/>
+              </form>
+          </div>
+      </label>
+    );
     }
 }
 
