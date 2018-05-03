@@ -1,9 +1,14 @@
+export const actionTypes = {
+    LOGIN:'LOGIN',
+    LOGOUT:'LOGOUT'
+}
+
 export const login = (username, token) => ({
-    type:'LOGIN',
+    type:actionTypes.LOGIN,
     username,
     token
 });
 
 export const logout = () => ({
-    type:'LOGOUT'
+    type:actionTypes.LOGOUT
 });

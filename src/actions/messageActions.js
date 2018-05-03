@@ -1,16 +1,22 @@
+export const actionTypes = {
+    SEND_MESSAGE:'SEND_MESSAGE',
+    RECIEVE_MESSAGE:'RECIEVE_MESSAGE',
+    SWITCH_ROOM:'SWITCH_ROOM'
+}
+
 export const sendMessage = (username, text) => ({
-    type:'SEND_MESSAGE',
+    type:actionTypes.SEND_MESSAGE,
     username,
     text
 })
 
 export const recieveMessage = (username, text) => ({
-    type:'RECIEVE_MESSAGE',
+    type:actionTypes.RECIEVE_MESSAGE,
     username,
     text
 })
 
 export const switchRoom = (room) => ({
-    type:'SWITCH_ROOM',
+    type:actionTypes.SWITCH_ROOM,
     room
 });
