@@ -3,73 +3,6 @@ import React, {Component} from 'react';
 
 import commands from '../../modules/commands';
 
-var mech = {
-    name:'My Super Cool Mech',
-    hardpoints:[
-        {
-            name:"Armotron 3000",
-            hardpoints:[
-                {
-                    name:"gun",
-                    hardpoints:[
-                        {name:"Advanced Stabilizer"},
-                        {
-                            name:"Armotron 3000",
-                            hardpoints:[
-                                {
-                                    name:"gun",
-                                    hardpoints:[
-                                        {name:"Advanced Stabilizer"},
-                                        {name:"Advanced Stabilizer"}
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {name:"Battery"},
-        {
-            name:"Armotron 3000",
-            hardpoints:[
-                {
-                    name:"gun",
-                    hardpoints:[
-                        {name:"Advanced Stabilizer"},
-                        {name:"Advanced Stabilizer"},
-                        {
-                          name:"Advanced Stabilizer",
-                          hardpoints:[
-                            {name:"Advanced Stabilizer"},
-                            {
-                              name:"Advanced Stabilizer",
-                              hardpoints:[
-                                {name:"Advanced Stabilizer"},
-                                {name:"Advanced Stabilizer"}
-                              ]
-                            }
-                          ]
-                        },
-                        {name:"Advanced Stabilizer"},
-                        {name:"Advanced Stabilizer"},
-                        {name:"Advanced Stabilizer"}
-                    ]
-                }
-            ]
-        },
-        {
-            name:"Leg Part Mk.5",
-            hardpoints:[
-                {name:"Ultra Jump Hydraulics"}
-            ]
-        },
-        {name:"Battery"}
-    ]
-}
-
-
-
 
 class MechDisplay extends Component{
 
@@ -111,22 +44,22 @@ class MechDisplay extends Component{
         if (this.isLast(node, parent)) {
           str +=prefix+"\n";
         } else {
-          if(parent === mech) {
+          if(parent === this.props.mechInventory) {
             str +="│\n";
           }
         }
       }
-
       return str;
   }
 
   render(){
+    console.log(this.props.mechInventory);
     return (
       <div className="game bot">
         <pre>
-          ┌ {mech.name}<br/>
+          ┌ {this.props.mechInventory.name}<br/>
           │<br/>
-          {this.traverseHelper(mech)}
+          {this.traverseHelper(this.props.mechInventory)}
         </pre>
       </div>
     );
@@ -134,7 +67,7 @@ class MechDisplay extends Component{
 }
 
 const mapStateToProps = state => ({
-
+  mechInventory:state.mechInventory
 })
 
 const mapDispatchToProps = dispatch => ({

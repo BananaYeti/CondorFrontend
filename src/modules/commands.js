@@ -25,6 +25,11 @@ var commandsMap = {
         func:exit,
         description:'logs out of condor',
         usage:'exit'
+    },
+    'inventory':{
+        func:inventory,
+        description:'Shows your inventory',
+        usage:'inventory'
     }
 }
 
@@ -44,7 +49,7 @@ function processCommand(command, commandArray){
 
 
 function changeChat(args){
-    if(args.length == 1){
+    if(args.length === 1){
         var newRoom = args[0]
         store.dispatch(switchRoom(newRoom));
         print('Switched to new room');
@@ -62,6 +67,16 @@ function help(args){
         if(commandsMap.hasOwnProperty(command)){
             print(command + ' - ' + commandsMap[command].description);
         }
+    }
+}
+
+function inventory(args){
+    var counter = 0;
+    var state = store.getState();
+    console.log(state.mechInventory);
+    for (var item in state.mechInventory.inventory){
+        print(counter + ' - ' + state.mechInventory.inventory[item].name);
+        counter++;
     }
 }
 

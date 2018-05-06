@@ -3,11 +3,13 @@ import {combineReducers} from 'redux';
 import messages from './messages';
 import commands from './commands';
 import authorization from './authorization';
+import mechInventory from './mechInventory';
 
 const AppReducers = combineReducers({
     messages, 
     commands,
-    authorization
+    authorization,
+    mechInventory
 });
 
 const rootReducer = (state, action) => {

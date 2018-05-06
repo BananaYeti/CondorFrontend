@@ -1,5 +1,3 @@
-import commands from '../modules/commands';
-
 const defaultState = {
     commands:[],
     stdOut:[],
