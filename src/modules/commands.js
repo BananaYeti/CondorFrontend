@@ -4,6 +4,9 @@ import {store, persistor} from '../store';
 import {printLine} from '../actions/commandActions';
 import {switchRoom} from '../actions/messageActions';
 import {logout} from '../actions/authActions';
+import {swapPart, installPart, removePart} from '../actions/mechInventoryActions';
+
+import mech from '../modules/mechInventory';
 
 var commandsMap = {
     'chat':{
@@ -30,6 +33,31 @@ var commandsMap = {
         func:inventory,
         description:'Shows your inventory',
         usage:'inventory'
+    },
+    'part':{
+        func:getPart,
+        description:'gets the part dingus',
+        usage:'part [number]'
+    },
+    'parent':{
+        func:getParent,
+        description:'gets the part which a part is attached to',
+        usage:'parent [part label]'
+    },
+    'swap':{
+        func:swapPartCmd,
+        description:'Swaps two parts on the mech',
+        usage:'swap [hardpoint] [hardpoint]'
+    },
+    'inst':{
+        func:instPartCmd,
+        description:'Installs a part onto the mech',
+        usage:'inst [inv-slot] [hardpoint]'        
+    },
+    'rm':{
+        func:rmvPartCmd,
+        description:'Removes a part from the mech',
+        usage:'rm [partslot]'
     }
 }
 
@@ -78,6 +106,57 @@ function inventory(args){
         print(counter + ' - ' + state.mechInventory.inventory[item].name);
         counter++;
     }
+}
+
+function labelToIndex(label){
+    label = label.toUpperCase();
+    var letter = label.charCodeAt(0) - 'A'.charCodeAt(0);
+    var number = label.charCodeAt(1) - '0'.charCodeAt(0);
+    return letter * 10 + number;
+}
+
+function getPart(args){
+    var mechInventory = store.getState().mechInventory;
+    var part = mech.getPartMech(mechInventory, labelToIndex(args[0]));
+    console.log(part);
+    print(part?part.name:"EMPTY");
+}
+
+function getParent(args){
+    var mechInventory = store.getState().mechInventory;
+    var parent = mech.getParent(mechInventory, labelToIndex(args[0]));
+    print(parent.parent.name + ' ' + parent.slot);
+}
+
+function swapPartCmd(args){
+    var mechInventory = store.getState().mechInventory;
+    var pointA = labelToIndex(args[0]);
+    var pointB = labelToIndex(args[1]);
+    var partA = mech.getPartMech(mechInventory, pointA);        
+    var partB = mech.getPartMech(mechInventory, pointB);        
+    if(partA.hardpoints || partB.hardpoints){
+        print('Cannot swap parts with sub-modules attached');
+    } else {
+        store.dispatch(swapPart(pointA, pointB));
+    }
+}
+
+function rmvPartCmd(args){
+    var point = labelToIndex(args[0]);
+
+    var mechInventory = store.getState().mechInventory;
+    var partA = mech.getPartMech(mechInventory, point);        
+    if(partA && partA.hardpoints){
+        print('Cannot remove parts with sub-modules attached');
+    } else {
+        store.dispatch(removePart(point));
+    }
+}
+
+function instPartCmd(args){
+    var invslot = args[0];
+    var mechpoint = labelToIndex(args[1]);
+    store.dispatch(installPart(invslot,mechpoint));
 }
 
 function exit(){

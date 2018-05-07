@@ -5,26 +5,61 @@ function checkValidSwap(mechInventory, startPoint, endPoint){
 
 function checkValidInstall(mechInventory, invSlot, point){
     return mechInventory.inventory[invSlot] 
-        && getPartMech(mechInventory, point);
+        && (getPartMech(mechInventory, point) == null);
 }
 
 function getPartMech(mechinventory, point){
-    if(point.length < 1) return null;
-    var part = null;
-    var parent = mechinventory;
-    for(var coord in point){
-        var child = parent.hardpoints[coord]; 
-        if(child){
-            parent = child
-        } else {
-            return null;
+    var list = traverse(mechinventory);
+    console.log(list);
+    return list[point];
+}
+
+function traverse(node){
+    var list = [];
+    if(node && node.hardpoints){
+        node.hardpoints.forEach((child) => {
+            list = [...list, child ,...traverse(child)];
+        });
+    }
+    return list;
+}
+
+function getParent(mechinventory, point){
+    return _getParent(mechinventory, point, -1);
+}
+function _getParent(node, point, counter){
+    if(node && node.hardpoints){
+        var index = 0;
+        for(var child of node.hardpoints){
+            counter += 1;
+            if(counter == point){
+                return {parent:node, slot:index};
+            }
+            var result = _getParent(child, point, counter);
+            if(result != null){
+                return result;
+            }
+            counter += getTotalChildren(child);
+            index += 1;
         }
     }
-    return parent;
+    return null;
+}
+
+function getTotalChildren(node){
+    var totalChildren = 0;
+    if(node && node.hardpoints){
+        node.hardpoints.forEach((child)=>{
+            totalChildren += 1;
+            totalChildren += getTotalChildren(child);
+        });
+    }
+    return totalChildren;
 }
 
 export default {
     checkValidInstall,
     checkValidSwap,
-    getPartMech
+    getPartMech,
+    getParent
 };

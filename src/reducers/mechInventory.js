@@ -52,7 +52,7 @@ var exampleMech = {
                         },
                         {name:"Advanced Stabilizer"},
                         {name:"Advanced Stabilizer"},
-                        {name:"Advanced Stabilizer"}
+                        null
                     ]
                 }
             ]
@@ -60,7 +60,8 @@ var exampleMech = {
         {
             name:"Leg Part Mk.5",
             hardpoints:[
-                {name:"Ultra Jump Hydraulics"}
+                null,
+                null
             ]
         },
         {name:"Battery"}
@@ -90,22 +91,30 @@ const mechInventory = (state = exampleMech, action) => {
         case actionTypes.MECH_INST_PART:
             if(mechInventoryModule.checkValidInstall(state, action.inventorySlot, action.endpoint)){
                 var stateCopy = Object.assign({}, state);
-                var part = stateCopy.inventory.splice(action.inventorySlot, 1);
-                var finalPointIndex = action.endpoint.splice(action.endpoint.length - 1, 1);
-                var newParent = mechInventoryModule.getPartMech(action.endpoint);
-                newParent.hardpoints[finalPointIndex] = part;
+                var part = stateCopy.inventory.splice(action.inventorySlot, 1)[0];
+                var parentResult = mechInventoryModule.getParent(stateCopy, action.endPoint);
+                parentResult.parent.hardpoints[parentResult.slot] = part;
                 return stateCopy;
             }
+            return state;
 
         case actionTypes.MECH_RMV_PART:
             var stateCopy = Object.assign({}, state);
-            var finalPointIndex = action.endpoint.splice(action.point.length - 1, 1);
-            var newParent = mechInventoryModule.getPartMech(stateCopy, action.point);
-            newParent.hardpoints[finalPointIndex] = null;
+            var part = mechInventoryModule.getPartMech(stateCopy, action.point);
+            var parentResult = mechInventoryModule.getParent(stateCopy, action.point);
+            parentResult.parent.hardpoints[parentResult.slot] = null;
+            stateCopy.inventory = [...stateCopy.inventory, part];
             return stateCopy;
 
         case actionTypes.MECH_SWAP_PART:
-    
+            var stateCopy = Object.assign({},state);
+            var startParentResult = mechInventoryModule.getParent(stateCopy, action.startPoint);
+            var endParentResult = mechInventoryModule.getParent(stateCopy, action.endPoint);
+            var startPart = mechInventoryModule.getPartMech(stateCopy, action.startPoint);            
+            var endPart = mechInventoryModule.getPartMech(stateCopy, action.endPoint);
+            startParentResult.parent.hardpoints[startParentResult.slot] = endPart;
+            endParentResult.parent.hardpoints[endParentResult.slot] = startPart;
+            return stateCopy;
         default:
             return state;
     }

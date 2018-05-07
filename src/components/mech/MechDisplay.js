@@ -3,8 +3,16 @@ import React, {Component} from 'react';
 
 import commands from '../../modules/commands';
 
+var counter = 0;
 
 class MechDisplay extends Component{
+
+  constructor(props){
+    super(props);
+    this.state = {
+
+    }
+  }
 
   isLast(node, parent) {
     if (parent.hardpoints[parent.hardpoints.length-1] == node) {
@@ -16,20 +24,32 @@ class MechDisplay extends Component{
 
   traverseHelper(rootNode) {
     var str="";
+    counter = 0;
     for (let child of rootNode.hardpoints) {
-      str+=this.traverse(child, "", rootNode);
+      str+=this.traverse(child, "", rootNode, counter);
+      counter++;
     }
     return str;
   }
 
+  getLabelString(number){
+    var letter = String.fromCharCode('A'.charCodeAt()+(number / 10));
+    var number = number % 10;
+    return '[' + letter + number + '] ';
+  }
+
   traverse(node, prefix, parent) {
       var str="";
-      if (node.hardpoints) {
+      var label = this.getLabelString(counter);
+      if (node && node.hardpoints) {
         str +=
           prefix+
           (this.isLast(node, parent) ? "└┬ " : "├┬ ")+
+          label+
           node.name+"\n";
+        var subCounter = 1;
         for (let child of node.hardpoints) {
+          counter ++;
           str += this.traverse(
             child,
             prefix+(this.isLast(node, parent) ? " " : "│"),
@@ -40,7 +60,8 @@ class MechDisplay extends Component{
         str +=
           prefix+
           (this.isLast(node, parent)? "└─ " : "├─ ")+
-          node.name+"\n";
+          label+
+          (node?node.name:'EMPTY')+"\n";
         if (this.isLast(node, parent)) {
           str +=prefix+"\n";
         } else {
