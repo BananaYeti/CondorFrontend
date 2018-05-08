@@ -152,8 +152,8 @@ function swapPartCmd(args){
     var pointB = labelToIndex(args[1]);
     var partA = mech.getPartMech(mechInventory, pointA);
     var partB = mech.getPartMech(mechInventory, pointB);
-    if(partA.hardpoints || partB.hardpoints){
-        print('Cannot swap parts with sub-modules attached');
+    if(partA || partB || partA.hardpoints || partB.hardpoints){
+        print('Unable to swap, dingus');
     } else {
         store.dispatch(swapPart(pointA, pointB));
     }

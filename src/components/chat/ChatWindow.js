@@ -54,7 +54,7 @@ class ChatWindow extends Component{
           </div>
           <div className="messagebox">
               <form onSubmit={this.submitMessage}>
-                  Say: <input
+                  &lt;{this.props.chat}&gt;: <input
                       autoComplete="off"
                       autoCorrect="off"
                       autoCapitalize="off"
