@@ -1,5 +1,6 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
+import mechHelper from '../../modules/mechInventory';
 
 import commands from '../../modules/commands';
 
@@ -20,6 +21,11 @@ class MechDisplay extends Component{
     } else {
       return false;
     }
+  }
+
+  realIsLast(count){
+    var parentResult = mechHelper.getParent(this.props.mechInventory, count);
+    return (parentResult.parent.hardpoints.length - 1 == parentResult.slot);
   }
 
   traverseHelper(rootNode) {
@@ -59,10 +65,10 @@ class MechDisplay extends Component{
       } else {
         str +=
           prefix+
-          (this.isLast(node, parent)? "└─ " : "├─ ")+
+          (this.realIsLast(counter)? "└─ " : "├─ ")+
           label+
           (node?node.name:'EMPTY')+"\n";
-        if (this.isLast(node, parent)) {
+        if (this.realIsLast(counter)) {
           str +=prefix+"\n";
         } else {
           if(parent === this.props.mechInventory) {
