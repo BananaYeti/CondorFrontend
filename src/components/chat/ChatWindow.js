@@ -62,7 +62,7 @@ class ChatWindow extends Component{
                       wrap="true" cols="1"
                       id="chat_line"
                       type="text"
-                      className="inputArea"
+                      className="messageInputArea"
                       value={this.state.nextMessage}
                       onChange={this.updateNextMessage}/>
               </form>

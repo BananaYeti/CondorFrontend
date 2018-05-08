@@ -66,21 +66,21 @@ class MainTerminal extends Component {
                 <h1>CONDOR 2049</h1>
                 <p>Welcome, contestant {this.props.username}</p>
                 {
-                    this.props.lines.map((line, index) => 
+                    this.props.lines.map((line, index) =>
                         <p key={index}>{line}</p>
                     )
                 }
                 <form onSubmit={this.submitCommand}>
-                    foo@bar:~$ 
-                    <input autoComplete="off" 
-                            autoCorrect="off" 
-                            autoCapitalize="off" 
-                            spellCheck="false" 
-                            id="command_line" 
-                            type="text" 
-                            className="inputArea"
+                    <pre>foo@bar:~$ <input autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck="false"
+                            id="command_line"
+                            type="text"
+                            className="commandInputArea"
                             value={this.state.newtermline}
                             onChange={this.updatenewtermline}/>
+                    </pre>
                 </form>
                 <div style={{ float:"left", clear: "both" }}
                      ref={(el) => { this.messagesEnd = el; }}>

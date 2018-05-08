@@ -1,3 +1,28 @@
 .error{
     color:red;
   }
+.userInputArea {
+  width: 20%;
+  font-size: 26px;
+  font-size: 30px;
+}
+.signIn {
+  margin-top: 15%;
+  text-align: center;
+  font-size: 30px;
+
+}
+.buttonDiv {
+  text-align: center;
+  padding: 10px;
+}
+.userButton {
+  padding: 10px;
+  margin: 10px;
+  font-size: 26px;
+  color: #14fdce;
+  background-color: transparent;
+  border-color: #14fdce;
+  width: 200px;
+  outline: none;
+}

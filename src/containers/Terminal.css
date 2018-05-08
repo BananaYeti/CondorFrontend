@@ -14,7 +14,6 @@ body {
 input {                         /*BUG! input field text does not havVT323e glow effect*/
   border: none;
   display: inline-block;
-  width: 80%;
   background-color: transparent; /*#031e11;*/
   text-shadow: 0 0 0 #14fdce;
   outline: none;
@@ -23,7 +22,12 @@ input {                         /*BUG! input field text does not havVT323e glow 
   font-size: 20px;
   -webkit-font-smoothing: none;
 }
-
+.commandInputArea {
+  width: 68%;
+}
+.messageInputArea {
+  width: 90%;
+}
 a,
 a:visited {
   border-bottom: 0.2rem solid #bcbc3a;

@@ -1,5 +1,6 @@
 import chat from './chat';
 import {store, persistor} from '../store';
+import axios from 'axios';
 
 import {printLine} from '../actions/commandActions';
 import {switchRoom} from '../actions/messageActions';
