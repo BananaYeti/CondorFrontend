@@ -9,6 +9,11 @@ import {swapPart, installPart, removePart} from '../actions/mechInventoryActions
 import mech from '../modules/mechInventory';
 
 var commandsMap = {
+    'fight':{
+      func:enterBoutList,
+      description:'Enter the bout list and wait for an opponent',
+      usage:'fight'
+    },
     'chat':{
         func:changeChat,
         description:'Changes the chat room you\'re in',
@@ -52,7 +57,7 @@ var commandsMap = {
     'inst':{
         func:instPartCmd,
         description:'Installs a part onto the mech',
-        usage:'inst [inv-slot] [hardpoint]'        
+        usage:'inst [inv-slot] [hardpoint]'
     },
     'rm':{
         func:rmvPartCmd,
@@ -75,6 +80,18 @@ function processCommand(command, commandArray){
 
 //All command functions are given args which come after command
 
+function enterBoutList(args) {
+  axios({
+      method:'post',
+      url:'http://18.220.152.168:80/matchmaking',
+      data:{_id:store.getState().authorization.username}
+  }).then((response) => {
+      console.log('bout entered');
+      console.log(response);
+  }).catch((error) => {
+      console.log('bad');
+  });
+}
 
 function changeChat(args){
     if(args.length === 1){
@@ -132,8 +149,8 @@ function swapPartCmd(args){
     var mechInventory = store.getState().mechInventory;
     var pointA = labelToIndex(args[0]);
     var pointB = labelToIndex(args[1]);
-    var partA = mech.getPartMech(mechInventory, pointA);        
-    var partB = mech.getPartMech(mechInventory, pointB);        
+    var partA = mech.getPartMech(mechInventory, pointA);
+    var partB = mech.getPartMech(mechInventory, pointB);
     if(partA.hardpoints || partB.hardpoints){
         print('Cannot swap parts with sub-modules attached');
     } else {
@@ -145,7 +162,7 @@ function rmvPartCmd(args){
     var point = labelToIndex(args[0]);
 
     var mechInventory = store.getState().mechInventory;
-    var partA = mech.getPartMech(mechInventory, point);        
+    var partA = mech.getPartMech(mechInventory, point);
     if(partA && partA.hardpoints){
         print('Cannot remove parts with sub-modules attached');
     } else {
