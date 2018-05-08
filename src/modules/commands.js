@@ -61,6 +61,9 @@ var commandsMap = {
         func:rmvPartCmd,
         description:'Removes a part from the mech',
         usage:'rm [partslot]'
+    },
+    'mech':{
+        func:updateMech
     }
 }
 
