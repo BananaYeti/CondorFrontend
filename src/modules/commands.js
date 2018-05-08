@@ -5,9 +5,11 @@ import axios from 'axios';
 import {printLine} from '../actions/commandActions';
 import {switchRoom} from '../actions/messageActions';
 import {logout} from '../actions/authActions';
-import {swapPart, installPart, removePart} from '../actions/mechInventoryActions';
+import {swapPart, installPart, removePart, setMech} from '../actions/mechInventoryActions';
 
 import mech from '../modules/mechInventory';
+
+import config from '../config';
 
 var commandsMap = {
     'fight':{
@@ -45,15 +47,10 @@ var commandsMap = {
         description:'gets the part dingus',
         usage:'part [number]'
     },
-    'parent':{
-        func:getParent,
-        description:'gets the part which a part is attached to',
-        usage:'parent [part label]'
-    },
-    'swap':{
-        func:swapPartCmd,
-        description:'Swaps two parts on the mech',
-        usage:'swap [hardpoint] [hardpoint]'
+    'mv':{
+        func:mvPartCmd,
+        description:'Moves a part frome one point to another',
+        usage:'mv [hardpoint] [hardpoint]'
     },
     'inst':{
         func:instPartCmd,
@@ -84,7 +81,7 @@ function processCommand(command, commandArray){
 function enterBoutList(args) {
   axios({
       method:'post',
-      url:'http://18.220.152.168:80/matchmaking',
+      url:config.backendUrl + '/matchmaking',
       data:{_id:store.getState().authorization.username}
   }).then((response) => {
       console.log('bout entered');
@@ -127,6 +124,9 @@ function inventory(args){
 }
 
 function labelToIndex(label){
+    if(label == null || label.length != 2){
+        return null
+    }
     label = label.toUpperCase();
     var letter = label.charCodeAt(0) - 'A'.charCodeAt(0);
     var number = label.charCodeAt(1) - '0'.charCodeAt(0);
@@ -134,10 +134,13 @@ function labelToIndex(label){
 }
 
 function getPart(args){
+    if(args.length != 1){
+        print('Invalid use of command');
+    }
     var mechInventory = store.getState().mechInventory;
-    var part = mech.getPartMech(mechInventory, labelToIndex(args[0]));
+    var part = mech.getPoint(mechInventory, labelToIndex(args[0]));
     console.log(part);
-    print(part?part.name:"EMPTY");
+    print(part?part:"EMPTY");
 }
 
 function getParent(args){
@@ -146,35 +149,103 @@ function getParent(args){
     print(parent.parent.name + ' ' + parent.slot);
 }
 
-function swapPartCmd(args){
+function mvPartCmd(args){
     var mechInventory = store.getState().mechInventory;
-    var pointA = labelToIndex(args[0]);
-    var pointB = labelToIndex(args[1]);
-    var partA = mech.getPartMech(mechInventory, pointA);
-    var partB = mech.getPartMech(mechInventory, pointB);
-    if(partA || partB || partA.hardpoints || partB.hardpoints){
-        print('Unable to swap, dingus');
+    
+    try{
+        var point = mech.getPoint(mechInventory,labelToIndex(args[0]));
+        var endPoint = mech.getPoint(mechInventory,labelToIndex(args[1]));
+    } catch(err) {
+        print('error - command used improperly');
+        print(commandsMap.mv.usage);
+        return;
+    }
+    if(point && endPoint){
+        axios({
+            method:'post',
+            url:config.backendUrl +'/mvPart',
+            headers:{'x-access-token':store.getState().authorization.token},
+            data:{
+                point:point,
+                endPoint:endPoint
+            }
+        }).then((response) => {
+            store.dispatch(setMech(response.data));
+        }).catch((error) => {
+            print('error - command used improperly');
+            print(commandsMap.mv.usage);
+        });
     } else {
-        store.dispatch(swapPart(pointA, pointB));
+        print('error - command used improperly');
+        print(commandsMap.mv.usage);    
     }
 }
 
 function rmvPartCmd(args){
-    var point = labelToIndex(args[0]);
-
     var mechInventory = store.getState().mechInventory;
-    var partA = mech.getPartMech(mechInventory, point);
-    if(partA && partA.hardpoints){
-        print('Cannot remove parts with sub-modules attached');
-    } else {
-        store.dispatch(removePart(point));
+
+    var index = labelToIndex(args[0]);
+    var point = mech.getPoint(mechInventory,index);
+    if(!point){
+        print('error - command used improperly');
+        print(commandsMap.rm.usage);    
+        return;
     }
+
+    axios({
+        method:'post',
+        url:config.backendUrl + '/rmPart',
+        headers:{'x-access-token':store.getState().authorization.token},
+        data:{
+            point
+        }
+    }).then((response) => {
+        store.dispatch(setMech(response.data));
+    }).catch((error) => {
+        print('error - command used improperly');
+        print(commandsMap.rm.usage);    
+     });
 }
 
 function instPartCmd(args){
-    var invslot = args[0];
-    var mechpoint = labelToIndex(args[1]);
-    store.dispatch(installPart(invslot,mechpoint));
+    var mechInventory = store.getState().mechInventory;
+
+    var invSlot = args[0];
+
+    var index = labelToIndex(args[1]);
+    var point = mech.getPoint(mechInventory,index);
+    if(!point || !invSlot){
+        print('error - command used improperly');
+        print(commandsMap.rm.usage);    
+        return;
+    }
+
+    axios({
+        method:'post',
+        url:config.backendUrl +'/instPart',
+        headers:{'x-access-token':store.getState().authorization.token},
+        data:{
+            invSlot:args[0],
+            point
+        }
+    }).then((response) => {
+        store.dispatch(setMech(response.data));
+    }).catch((error) => {
+        console.log('bad');
+    });
+}
+
+function updateMech(){
+    var mechInventory = store.getState().mechInventory;
+    axios({
+        method:'get',
+        url:config.backendUrl + '/myMech',
+        headers:{'x-access-token':store.getState().authorization.token},
+    }).then((response) => {
+        store.dispatch(setMech(response.data));
+    }).catch((error) => {
+        console.log('bad');
+    });
 }
 
 function exit(){
@@ -182,5 +253,6 @@ function exit(){
 }
 
 export default {
-    processCommand
+    processCommand,
+    updateMech
 }

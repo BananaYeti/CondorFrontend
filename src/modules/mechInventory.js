@@ -24,6 +24,30 @@ function traverse(node){
     return list;
 }
 
+function getPoint(mechInventory, index){
+    return _getPoint(mechInventory, index, -1);
+}
+
+function _getPoint(node, index, counter){
+    if(node && node.hardpoints){
+        var innerIndex = 0;
+        for(var child of node.hardpoints){
+            counter += 1;
+            if(counter == index){
+                return [innerIndex];
+            }
+            var result = _getPoint(child, index, counter);
+            if(result != null){
+                return [innerIndex, ...result];
+            }
+            counter += getTotalChildren(child);
+            innerIndex += 1;
+        }
+    }
+    return null;
+}
+
+
 function getParent(mechinventory, point){
     return _getParent(mechinventory, point, -1);
 }
@@ -61,5 +85,6 @@ export default {
     checkValidInstall,
     checkValidSwap,
     getPartMech,
-    getParent
+    getParent,
+    getPoint
 };

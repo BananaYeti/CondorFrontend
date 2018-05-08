@@ -1,4 +1,6 @@
 import openSocket from 'socket.io-client';
-const  socket = openSocket('http://18.220.152.168:80');
+import config from '../config';
+
+const  socket = openSocket(config.backendUrl);
 
 export default socket;

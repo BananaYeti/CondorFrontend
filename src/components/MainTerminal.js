@@ -13,6 +13,7 @@ class MainTerminal extends Component {
         this.state={
             newtermline:''
         };
+        commands.updateMech();
     }
 
     takeScreenShot = (e) => {

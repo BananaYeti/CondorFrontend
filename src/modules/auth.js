@@ -2,6 +2,8 @@ import {store, persistor} from '../store';
 import {login, logout} from '../actions/authActions';
 import axios from 'axios';
 
+import config from '../config';
+
 function sendLogin(username, password, cb){
     var postData = {
         username,
@@ -10,7 +12,7 @@ function sendLogin(username, password, cb){
     console.log('logging in' + username)
     axios({
         method:'post',
-        url:'http://18.220.152.168:80/login',
+        url:config.backendUrl + '/login',
         data:postData
     }).then((response) => {
         console.log('login succeeded');
@@ -32,7 +34,7 @@ function sendRegister(username, password){
     console.log('logging in' + username)
     axios({
         method:'post',
-        url:'http://18.220.152.168:80/register',
+        url:config.backendUrl + '/register',
         data:postData
     }).then((response) => {
         console.log('login succeeded');
