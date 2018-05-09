@@ -3,7 +3,6 @@ import {store, persistor} from '../store';
 import axios from 'axios';
 
 import {printLine, clear} from '../actions/commandActions';
-import {switchRoom} from '../actions/messageActions';
 import {logout} from '../actions/authActions';
 import {swapPart, installPart, removePart, setMech} from '../actions/mechInventoryActions';
 
@@ -116,7 +115,7 @@ function enterBoutList(args) {
 function changeChat(args){
     if(args.length === 1){
         var newRoom = args[0]
-        store.dispatch(switchRoom(newRoom));
+        chat.switchToRoom(newRoom);
         print('Switched to new room');
     } else {
         print('Not valid use of command');
@@ -284,7 +283,7 @@ function statCommand(args){
     var pointer = args[0];
     var part = null;
     if(!isNaN(pointer)){
-        part = mechInventory.inventory[pointer];    
+        part = mechInventory.inventory[pointer];
     } else {
         var index = labelToIndex(args[0]);
         part = mech.getPartMech(mechInventory, index);

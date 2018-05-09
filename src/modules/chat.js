@@ -1,26 +1,28 @@
 import auth from './auth';
 import {store, persistor} from '../store';
 
-import {recieveMessage} from '../actions/messageActions';
+import {recieveMessage, switchRoom} from '../actions/messageActions';
 
-import socket from './socket';
+import {chatSocket} from './socket';
 
 subscribeToMessage((message) => {
-    if(message.room === store.getState().messages.room){
-        store.dispatch(recieveMessage(message.username, message.message));
-    }
-})
+  console.log(message);
+  store.dispatch(recieveMessage(message.username, message.message));
+});
 
 function switchToRoom(room){
-    socket.emit('subscribe', room);
+    chatSocket.emit('join', room, () => {
+      store.dispatch(switchRoom(room));
+      store.dispatch(recieveMessage('INFO', 'You have joined <' + room + '>'))
+    });
 }
-    
+
 function subscribeToMessage(cb){
-    socket.on('message', cb);
+  chatSocket.on('broadcast', cb);
 }
 
 function sendMessage(room, username, message){
-    socket.emit('message', {
+    chatSocket.emit('message', {
         username,
         room,
         message
