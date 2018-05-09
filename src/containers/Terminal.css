@@ -1,4 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=VT323);
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
 * {
   box-sizing: border-box;
 }
@@ -6,7 +8,7 @@
 body {
   background: #383838;
   color: #14fdce;
-  font-family: 'Consolas';
+  font-family: 'Roboto Mono';
   font-size: 20px;
   -webkit-font-smoothing: none;
 }
@@ -18,7 +20,7 @@ input {                         /*BUG! input field text does not havVT323e glow 
   text-shadow: 0 0 0 #14fdce;
   outline: none;
   color:#14fdce; /*Note, text shadow is being used for text*/
-  font-family: 'Consolas';
+  font-family: 'Roboto Mono';
   font-size: 20px;
   -webkit-font-smoothing: none;
 }
