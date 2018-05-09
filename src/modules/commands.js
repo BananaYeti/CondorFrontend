@@ -47,6 +47,11 @@ var commandsMap = {
         description:'gets the part dingus',
         usage:'part [number]'
     },
+    'mkpart':{
+        func:mkPartCmd,
+        description:'makes the part dingus',
+        usage:'mkpart [number]'
+    },
     'mv':{
         func:mvPartCmd,
         description:'Moves a part frome one point to another',
@@ -152,9 +157,31 @@ function getParent(args){
     print(parent.parent.name + ' ' + parent.slot);
 }
 
+function mkPartCmd(args){
+    if(args.length!=1||isNaN(args[0])){
+        print('error - command used improperly');
+        print(commandsMap.mkpart.usage);
+        return;
+    }
+
+    axios({
+        method:'post',
+        url:config.backendUrl + '/mkPart',
+        headers:{'x-access-token':store.getState().authorization.token},
+        data:{
+            numAdj:args[0]
+        }
+    }).then((response) => {
+        store.dispatch(setMech(response.data));
+    }).catch((error) => {
+        print('error - command used improperly');
+        print(commandsMap.mkpart.usage);
+     });
+}
+
 function mvPartCmd(args){
     var mechInventory = store.getState().mechInventory;
-    
+
     try{
         var point = mech.getPoint(mechInventory,labelToIndex(args[0]));
         var endPoint = mech.getPoint(mechInventory,labelToIndex(args[1]));
@@ -180,7 +207,7 @@ function mvPartCmd(args){
         });
     } else {
         print('error - command used improperly');
-        print(commandsMap.mv.usage);    
+        print(commandsMap.mv.usage);
     }
 }
 
@@ -191,7 +218,7 @@ function rmvPartCmd(args){
     var point = mech.getPoint(mechInventory,index);
     if(!point){
         print('error - command used improperly');
-        print(commandsMap.rm.usage);    
+        print(commandsMap.rm.usage);
         return;
     }
 
@@ -206,7 +233,7 @@ function rmvPartCmd(args){
         store.dispatch(setMech(response.data));
     }).catch((error) => {
         print('error - command used improperly');
-        print(commandsMap.rm.usage);    
+        print(commandsMap.rm.usage);
      });
 }
 
@@ -219,7 +246,7 @@ function instPartCmd(args){
     var point = mech.getPoint(mechInventory,index);
     if(!point || !invSlot){
         print('error - command used improperly');
-        print(commandsMap.rm.usage);    
+        print(commandsMap.rm.usage);
         return;
     }
 
