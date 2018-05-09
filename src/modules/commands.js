@@ -2,7 +2,7 @@ import chat from './chat';
 import {store, persistor} from '../store';
 import axios from 'axios';
 
-import {printLine} from '../actions/commandActions';
+import {printLine, clear} from '../actions/commandActions';
 import {switchRoom} from '../actions/messageActions';
 import {logout} from '../actions/authActions';
 import {swapPart, installPart, removePart, setMech} from '../actions/mechInventoryActions';
@@ -69,6 +69,16 @@ var commandsMap = {
     },
     'mech':{
         func:updateMech
+    },
+    'stat':{
+        func:statCommand,
+        description:'gets the stats of a part in the inventory or on the mech',
+        usage:'stat [invSlot or label]'
+    },
+    'clear':{
+        func:clearScreen,
+        description:'Clears the screen',
+        usage:'clear'
     }
 }
 
@@ -85,6 +95,10 @@ function processCommand(command, commandArray){
 }
 
 //All command functions are given args which come after command
+
+function clearScreen(){
+    store.dispatch(clear());
+}
 
 function enterBoutList(args) {
   axios({
@@ -263,6 +277,32 @@ function instPartCmd(args){
     }).catch((error) => {
         console.log('bad');
     });
+}
+
+function statCommand(args){
+    var mechInventory = store.getState().mechInventory;
+    var pointer = args[0];
+    var part = null;
+    if(!isNaN(pointer)){
+        part = mechInventory.inventory[pointer];    
+    } else {
+        var index = labelToIndex(args[0]);
+        part = mech.getPartMech(mechInventory, index);
+    }
+    print('name: ' + part.name);
+    for(var adjective of part.adjectives){
+        for(var stat in adjective.stats){
+            part.noun.stats[stat] += adjective.stats[stat];
+        }
+    }
+    for(var stat in part.noun.stats){
+        var value = part.noun.stats[stat];
+        if(value != 0){
+            print(value + '\t' + stat);
+        }
+    }
+
+    console.log(part);
 }
 
 function updateMech(){

@@ -47,7 +47,7 @@ class MechDisplay extends Component{
   traverse(node, prefix, parent) {
       var str="";
       var label = this.getLabelString(counter);
-      if (node && node.hardpoints) {
+      if (node && node.hardpoints && node.hardpoints.length > 0) {
         str +=
           prefix+
           (this.isLast(node, parent) ? "└┬ " : "├┬ ")+

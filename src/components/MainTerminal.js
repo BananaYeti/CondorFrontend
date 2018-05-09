@@ -11,7 +11,8 @@ class MainTerminal extends Component {
         console.log(this);
         this.pre = 'foo@bar:~$ ';
         this.state={
-            newtermline:''
+            newtermline:'',
+            oldCommand:0
         };
         commands.updateMech();
     }
@@ -60,6 +61,32 @@ class MainTerminal extends Component {
       this.scrollToBottom();
     }
 
+    handleKeyDown = (e) => {
+        if(e.key === "ArrowUp"){
+            var oc = this.state.oldCommand + 1
+            if(oc < this.props.commands.length){
+                var command = this.props.commands[this.props.commands.length - oc];
+                console.log(command.command + ' ' +command.args.join(' '))
+                this.setState({
+                    newtermline:command.command + ' ' +command.args.join(' '),
+                    oldCommand:oc
+                });
+            }
+        } if (e.key === "ArrowDown"){
+            var oc = this.state.oldCommand - 1
+            if(oc > 0){
+                var command = this.props.commands[this.props.commands.length - oc];
+                console.log(command.command + ' ' +command.args.join(' '))
+            } 
+            if ( oc >= 0 ){
+                this.setState({
+                    newtermline:oc==0?'':command.command + ' ' +command.args.join(' '),
+                    oldCommand:oc
+                });
+            }
+        }
+    }
+
     render() {
     return (
         <label htmlFor="command_line">
@@ -80,7 +107,8 @@ class MainTerminal extends Component {
                             type="text"
                             className="commandInputArea"
                             value={this.state.newtermline}
-                            onChange={this.updatenewtermline}/>
+                            onChange={this.updatenewtermline}
+                            onKeyDown={this.handleKeyDown}/>
                     </pre>
                 </form>
                 <div style={{ float:"left", clear: "both" }}
@@ -94,6 +122,7 @@ class MainTerminal extends Component {
 
 const mapStateToProps = state => ({
     lines:state.commands.stdOut,
+    commands:state.commands.commands,
     username:state.authorization.username
 })
 

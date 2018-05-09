@@ -20,6 +20,10 @@ const commandLine = (state = defaultState
         return Object.assign({},state,{
             stdOut:[...state.stdOut, action.lineText]
         });
+        case 'CLEAR':
+        return Object.assign({},state,{
+            stdOut:[]
+        });
         default:
            return state;
     }
