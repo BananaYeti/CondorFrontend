@@ -82,7 +82,7 @@ class MechDisplay extends Component{
   render(){
     console.log(this.props.mechInventory);
     return (
-      <div className="game bot">
+      <div className={"game bot " + (this.props.enemy?'enemy':'')}>
         <pre>
           ┌ {this.props.mechInventory.name}<br/>
           │<br/>
@@ -94,7 +94,6 @@ class MechDisplay extends Component{
 }
 
 const mapStateToProps = state => ({
-  mechInventory:state.mechInventory
 })
 
 const mapDispatchToProps = dispatch => ({

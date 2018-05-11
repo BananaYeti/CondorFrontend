@@ -5,8 +5,10 @@ import axios from 'axios';
 import {printLine, clear} from '../actions/commandActions';
 import {logout} from '../actions/authActions';
 import {swapPart, installPart, removePart, setMech} from '../actions/mechInventoryActions';
+import {endMatch} from '../actions/battle';
 
 import mech from '../modules/mechInventory';
+import battle from '../modules/battle';
 
 import config from '../config';
 
@@ -15,6 +17,11 @@ var commandsMap = {
       func:enterBoutList,
       description:'Enter the bout list and wait for an opponent',
       usage:'fight'
+    },
+    'forfit':{
+        func:forfitMatch,
+        description:'Focefully leave the match',
+        usage:'forfit'
     },
     'chat':{
         func:changeChat,
@@ -100,16 +107,7 @@ function clearScreen(){
 }
 
 function enterBoutList(args) {
-  axios({
-      method:'post',
-      url:config.backendUrl + '/matchmaking',
-      data:{_id:store.getState().authorization.username}
-  }).then((response) => {
-      console.log('bout entered');
-      console.log(response);
-  }).catch((error) => {
-      console.log('bad');
-  });
+    battle.matchmake();
 }
 
 function changeChat(args){
@@ -315,6 +313,10 @@ function updateMech(){
     }).catch((error) => {
         console.log('bad');
     });
+}
+
+function forfitMatch(){
+    store.dispatch(endMatch());
 }
 
 function exit(){

@@ -6,13 +6,14 @@ import MainTerminal from '../components/MainTerminal';
 import ChatWindow from '../components/chat/ChatWindow';
 import MechDisplay from '../components/mech/MechDisplay';
 
-class GameLayout extends Component{
+class BattleLayout extends Component{
     render(){
         return(
-        <div id="gameLayout">
+        <div id="gameLayout" className="battle">
             <MainTerminal/>
             <ChatWindow/>
             <MechDisplay mechInventory={this.props.mechInventory}/>
+            <MechDisplay enemy='true' mechInventory={this.props.opponentMechInventory}/>
         </div>
         )
     }
@@ -20,9 +21,10 @@ class GameLayout extends Component{
 
 const mapStateToProps = state => ({
     inMatch:state.battle.inMatch,
-    mechInventory:state.mechInventory
+    mechInventory:state.mechInventory,
+    opponentMechInventory:state.battle.opponentMechInventory
 });
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(BattleLayout);

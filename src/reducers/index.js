@@ -4,12 +4,14 @@ import messages from './messages';
 import commands from './commands';
 import authorization from './authorization';
 import mechInventory from './mechInventory';
+import battle from './battle';
 
 const AppReducers = combineReducers({
     messages, 
     commands,
     authorization,
-    mechInventory
+    mechInventory,
+    battle
 });
 
 const rootReducer = (state, action) => {
