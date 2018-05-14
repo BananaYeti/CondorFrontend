@@ -13,8 +13,13 @@ import config from '../config';
 var commandsMap = {
     'fight':{
       func:enterBoutList,
-      description:'Enter the bout list and wait for an opponent',
+      description:'Enters the bout list and waits for an opponent',
       usage:'fight'
+    },
+    'give':{
+      func:givePartCmd,
+      description:'Gives a part to another player',
+      usage:'give [inv-slot] [player]'
     },
     'chat':{
         func:changeChat,
@@ -222,6 +227,33 @@ function mvPartCmd(args){
         print('error - command used improperly');
         print(commandsMap.mv.usage);
     }
+}
+
+function givePartCmd(args){
+    var mechInventory = store.getState().mechInventory;
+
+    var invSlot = args[0];
+
+    var index = labelToIndex(args[1]);
+    if(!invSlot){
+        print('error - command used improperly');
+        print(commandsMap.give.usage);
+        return;
+    }
+    axios({
+        method:'post',
+        url:config.backendUrl + '/givePart',
+        headers:{'x-access-token':store.getState().authorization.token},
+        data:{
+            slot:invSlot,
+            player:args[1]
+        }
+    }).then((response) => {
+        store.dispatch(setMech(response.data));
+    }).catch((error) => {
+        print('error - command used improperly');
+        print(commandsMap.rm.usage);
+     });
 }
 
 function rmvPartCmd(args){
