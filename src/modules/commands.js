@@ -86,10 +86,19 @@ var commandsMap = {
         description:'gets the stats of a part in the inventory or on the mech',
         usage:'stat [invSlot or label]'
     },
+    'credits':{
+        func:getCredits,
+        description:'lists how many credits you currently have'
+    },
     'clear':{
         func:clearScreen,
         description:'Clears the screen',
         usage:'clear'
+    },
+    'pay':{
+        func:payCredits,
+        description:"pays a user a certain ammount of credits",
+        usage:"pay [username] [credit ammount]"
     }
 }
 
@@ -347,6 +356,53 @@ function updateMech(){
     });
 }
 
+function payCredits(args){
+    var username = args[0];
+    var value = args[1];
+    if(isNaN(value)){
+        print('error - command used improperly');
+        print(commandsMap.pay.usage);
+        return;
+    }
+    value = parseInt(value);
+    if(value < 0){
+        print("I see what you're trying to do...");
+        return;
+    }
+
+    axios({
+        method:'post',
+        url:config.backendUrl + '/sendCredits',
+        headers:{'x-access-token':store.getState().authorization.token},
+        data:{
+            username,
+            value
+        }
+    }).then((response) => {
+        print(response.data);
+    }).catch((error) => {
+        if(error){
+            print(error.response.data);
+        }
+    });
+}
+
+function getCredits(args){
+    axios({
+        method:'get',
+        url:config.backendUrl + '/getCredits',
+        headers:{'x-access-token':store.getState().authorization.token},
+    }).then((response) => {
+        console.log(response.data);
+        print(response.data);
+    }).catch((error) => {
+        if(error){
+            print('error - failed');
+            console.log(error);
+        }
+    });    
+}
+
 function forfitMatch(){
     store.dispatch(endMatch());
 }
@@ -357,5 +413,6 @@ function exit(){
 
 export default {
     processCommand,
-    updateMech
+    updateMech,
+    labelToIndex
 }

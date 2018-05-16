@@ -12,9 +12,10 @@ const commandLine = (state = defaultState
             command: action.command,
             args: action.args
         }
-        state = Object.assign({},state,{
+        return Object.assign({},state,{
             commands:[...state.commands, command],
-            commandToBeProcessed:command
+            commandToBeProcessed:command,
+            stdOut:[...state.stdOut, action.lineText]
         });
         case 'PRINT_LINE':
         return Object.assign({},state,{

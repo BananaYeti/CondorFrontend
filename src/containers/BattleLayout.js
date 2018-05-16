@@ -2,7 +2,7 @@ import {connect} from 'react-redux';
 
 import React, {Component} from 'react';
 
-import MainTerminal from '../components/MainTerminal';
+import BattleTerminal from '../components/BattleTerminal';
 import ChatWindow from '../components/chat/ChatWindow';
 import MechDisplay from '../components/mech/MechDisplay';
 
@@ -10,7 +10,7 @@ class BattleLayout extends Component{
     render(){
         return(
         <div id="gameLayout" className="battle">
-            <MainTerminal/>
+            <BattleTerminal/>
             <ChatWindow/>
             <MechDisplay mechInventory={this.props.mechInventory}/>
             <MechDisplay enemy='true' mechInventory={this.props.opponentMechInventory}/>

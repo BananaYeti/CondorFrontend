@@ -35,6 +35,7 @@ class MainTerminal extends Component {
 
     submitCommand = (e) => {
         e.preventDefault();
+
         var commandArray = this.state.newtermline.split(/(\s+)/).filter( function(e) { return e.trim().length > 0; } );
         var command = commandArray[0];
         if(command === 'scrot'){
@@ -72,7 +73,7 @@ class MainTerminal extends Component {
                     oldCommand:oc
                 });
             }
-        } if (e.key === "ArrowDown"){
+        } else if (e.key === "ArrowDown"){
             var oc = this.state.oldCommand - 1
             if(oc > 0){
                 var command = this.props.commands[this.props.commands.length - oc];
@@ -84,10 +85,15 @@ class MainTerminal extends Component {
                     oldCommand:oc
                 });
             }
+        } else {
+            this.setState({
+                oldCommand:0
+            });
         }
     }
 
     render() {
+    this.pre = this.props.username + "@rig:~$ "
     return (
         <label htmlFor="command_line">
             <div className="game term">
@@ -99,7 +105,7 @@ class MainTerminal extends Component {
                     )
                 }
                 <form onSubmit={this.submitCommand}>
-                    <pre>foo@bar:~$ <input autoComplete="off"
+                    <pre>{this.pre}<input autoComplete="off"
                             autoCorrect="off"
                             autoCapitalize="off"
                             spellCheck="false"
@@ -123,7 +129,7 @@ class MainTerminal extends Component {
 const mapStateToProps = state => ({
     lines:state.commands.stdOut,
     commands:state.commands.commands,
-    username:state.authorization.username
+    username:state.authorization.username,
 })
 
 const mapDispatchToProps = dispatch => ({
